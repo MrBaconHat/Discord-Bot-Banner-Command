@@ -3,7 +3,12 @@ from discord.ext import commands
 import requests
 
 
-token = 'paste your bot token here....'
+intents = discord.Intents.default()
+bot = commands.Bot(command_prefix='!', intents=intents)
+intents.message_content = True
+
+
+token = 'paste your discord bot token here....'
 
 
 def get_user_banner(user_id):
@@ -27,7 +32,7 @@ def get_user_banner(user_id):
 
 
 def banner_link_check(user_id, banner_url):
-    banner_types = ['.png?size=512', '.gif?size=512', '.jpg?size=512', 'jpeg?size=512']
+    banner_types = ['.gif?size=512', '.jpg?size=512', 'jpeg?size=512', '.png?size=512']
 
     for types in banner_types:
 
@@ -37,7 +42,6 @@ def banner_link_check(user_id, banner_url):
         if response.status_code == 200:
             return banner_link_checking
     return None
-
 
 
 @bot.hybrid_command(name='banner', description='Returns users banner')
@@ -51,13 +55,12 @@ async def banner(ctx, user: discord.User = None):
         banner_link_validation_check_response = banner_link_check(user_id, returned_response)
 
         if banner_link_validation_check_response:
-            await ctx.send(content=banner_link_validation_check_response)
+            await ctx.send(banner_link_validation_check_response)
         else:
             await ctx.send('there was an unexpected error...')
 
     elif not returned_response:
         await ctx.send(f'**{user.name}** have no banner...')
-
 
 
 @bot.event
@@ -67,3 +70,4 @@ async def on_ready():
 
 
 bot.run(token)
+
